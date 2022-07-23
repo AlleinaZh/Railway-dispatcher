@@ -48,83 +48,59 @@ struct Train
 	}
 };
 
-void create_train(unordered_map<long long, Train> &Dispatcher, vector <Train> &Broken)
+void enter_number(int &trainnum, int &i)
 {
-	
-	
-	Train train;
-	cout << " !!Створення потягу!!" << endl <<" По черзі введіть дані, які будуть запитуватись."<< endl;
-	cout << " •Номер потягу (будь яка кількість цифр, число має починатись із 1-9): ";
-	int i;
-	int num=NULL;
+	int num = NULL;
 	do
 	{
-		if(num!=NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
+		if (num != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
 		cin >> num;
-		train.number = num;
+		trainnum = num;
 		for (i = 0; num > 0; i++) num /= 10;
-	} while (train.number <=0);
+	} while (trainnum <= 0);
+}
 
-	cout << " •Перша літера міста з якого відправиться потяг (англійською): ";
-
-	char c1=NULL;
+void enter_city(char &city)
+{
+    city = NULL;
 	do
 	{
-		if(c1 !=NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
-		cin >> c1;
+		if (city != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
+		cin >> city;
 		getchar();
-		
-		if (c1 > 96 && c1 < 123)
+
+		if (city > 96 && city < 123)
 		{
-			int a = c1;
-			c1 = a - 32;
+			int a = city;
+			city = a - 32;
 		}
-	} while (c1 < 65 || c1>90);
-	train.departure_city = c1;
+	} while (city < 65 || city>90);
+}
 
-	cout << " •Перша літера міста в яке прибуває потяг (англійською): ";
-	char c2 = NULL;
+void enter_day(int &day)
+{
+	day = NULL;
 	do
 	{
-		if (c2 != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
-		cin >> c2;
-		getchar();
-		
-		if (c2 > 96 && c2 < 123)
-		{
-			int a = c2;
-			c2 = a - 32;
-		}
-    } while (c2 < 65 || c2>90);
-	train.arrival_city = c2;
+		if (day != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
+		cin >> day;
 
-	cout << " •День у який потяг відправиться (з 1-30): ";
-	train.departure_day = NULL;
-	do
-	{
-		if (train.departure_day != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
-		cin >> train.departure_day;
+	} while (1 > day || 30 < day);
+}
 
-	} while (1 > train.departure_day  || 30<= train.departure_day);
-	
-	cout << " •День у який потяг прибуде (з 1-30): ";
-	train.arrival_day = NULL;
-	do
-	{
-		if (train.arrival_day != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
-		cin >> train.arrival_day;
 
-	} while (30 < train.arrival_day || train.arrival_day < train.departure_day) ;
-
-	cout << " •Час у який потяг відправиться (записується через крапку): ";
-	train.departure_time = NULL;
+void enter_time_from(Train& train)
+{
+    train.departure_time = NULL;
 	do
 	{
 		if (train.departure_time != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
 		cin >> train.departure_time;
-	} while (train.departure_time>23.59 || train.departure_time<00.00);
+	} while (train.departure_time > 23.59 || train.departure_time < 00.00);
+}
 
-	cout << " •Час у який потяг прибуде (записується через крапку): ";
+void enter_time_to(Train& train)
+{
 	train.arrival_time = NULL;
 	do
 	{
@@ -134,34 +110,84 @@ void create_train(unordered_map<long long, Train> &Dispatcher, vector <Train> &B
 			do
 			{
 				cin >> train.arrival_time;
-			} while (train.arrival_time <=train.departure_time);
+			} while (train.arrival_time <= train.departure_time);
 		}
 		else cin >> train.arrival_time;
 	} while (train.arrival_time > 23.59 || train.arrival_time < 00.00);
+}
 
-	long long key = (train.departure_city * 100000)+(train.number*pow(10,i))+train.arrival_city;
-    
-	cout << "  _______________________________________" << endl
-		 << " | Потяг номер " << train.number << endl
-		 << " |-Відправка- " << endl 
-		 << " | •Місто " << train.departure_city << endl
-		 << " | •День " << train.departure_day << endl 
-		 << " | •Час " << train.departure_time << endl 
-		 << " |-Прибуття-" << endl 
-		 << " | •Місто " << train.arrival_city << endl 
-		 << " | •День " << train.arrival_day << endl 
-		 << " | •Час " << train.arrival_time << endl 
-		 << " |Стан потягу (0-5) " << train.condition << endl
-		 << " |__________________________________________" << endl;
+void print_one_train(Train& train)
+{
+   cout << "  __________________________________________" << endl
+		<< " | Потяг номер " << train.number << endl
+		<< " |-Відправка- " << endl
+		<< " | •Місто " << train.departure_city << endl
+		<< " | •День " << train.departure_day << endl
+		<< " | •Час " << train.departure_time << endl
+		<< " |-Прибуття-" << endl
+		<< " | •Місто " << train.arrival_city << endl
+		<< " | •День " << train.arrival_day << endl
+		<< " | •Час " << train.arrival_time << endl
+		<< " |Стан потягу (0-5) " << train.condition << endl
+		<< " |__________________________________________" << endl;
+}
+
+void key_creator(int &trainnum, char &cityfrom, char &cityto, int &i,long long &key)
+{
+	key = (cityfrom * 100 * pow(10, i)) + (trainnum * 100) + cityto;
+}
+
+void create_train(unordered_map<long long, Train>& Dispatcher, vector <Train>& Broken)
+{
+
+	Train train;
+	cout << " !!Створення потягу!!" << endl << " По черзі введіть дані, які будуть запитуватись." << endl;
+	cout << " •Номер потягу (будь яка кількість цифр, число має починатись із 1-9): ";
+	int trainnum;
+	int i;
+	enter_number(trainnum, i);
+	train.number = trainnum;
+
+	cout << " •Перша літера міста з якого відправиться потяг (англійською): ";
+	char cityfrom;
+	enter_city(cityfrom);
+	train.departure_city = cityfrom;
+	
+	cout << " •Перша літера міста в яке прибуває потяг (англійською): ";
+	char cityto;
+	enter_city(cityto);
+	train.arrival_city = cityto;
+
+	cout << " •День у який потяг відправиться (з 1-30): ";
+	int day_from;
+	enter_day(day_from);
+	train.departure_day = day_from;
+
+	cout << " •День у який потяг прибуде (з 1-30): ";
+	int day_to;
+	enter_day(day_to);
+	train.arrival_day = day_to;
+
+	cout << " •Час у який потяг відправиться (записується через крапку): ";
+	enter_time_from(train);
+
+	cout << " •Час у який потяг прибуде (записується через крапку): ";
+	enter_time_to(train);
+
+	long long key;
+	key_creator(trainnum, cityfrom, cityto, i, key);
+
+	print_one_train(train);
+	
 
 	if (train.accidient)
 	{
 		int choice;
-		cout<<" !!!!У рейсі сталася аварія!!!!\n" << " Щоб збеоегти потяг натисніть 1 . Або будь яку цифру, щоб продовжити:";
+		cout << " !!!!У рейсі сталася аварія!!!!\n" << " Щоб зберегти потяг натисніть 1 . Або будь яку цифру, щоб продовжити:";
 		cin >> choice;
-		if(choice==1)
+		if (choice == 1)
 		{
-			cout << " Потяг збережено." <<endl;
+			cout << " Потяг збережено." << endl;
 			Broken.push_back(train);
 		}
 	}
@@ -171,57 +197,24 @@ void create_train(unordered_map<long long, Train> &Dispatcher, vector <Train> &B
 	system("cls");
 }
 
-void delete_train(unordered_map<long long, Train> &Dispatcher)
+void delete_train(unordered_map<long long, Train>& Dispatcher)
 {
-	int trainnum;
+	int trainnum, i;
 	char cityfrom, cityto;
 	cout << "  Для того щоб видалити потяг треба ввести його номер та міста звідки - куди він прямує" << endl;
 	cout << " •Номер потягу: ";
-	int i;
-	int num = NULL;
-	do
-	{
-		if (num != NULL) cout << " Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> num;
-		trainnum = num;
-		for (i = 0; num > 0; i++) num /= 10;
-	} while (trainnum <= 0);
+	enter_number(trainnum, i);
 
 	cout << " •Перша літера міста з якого відправиться потяг: ";
-	char c1 = NULL;
-	do
-	{
-		if (c1 != NULL) cout << " Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> c1;
-		getchar();
-
-		if (c1 > 96 && c1 < 123)
-		{
-			int a = c1;
-			c1 = a - 32;
-		}
-	} while (c1 < 65 || c1>90);
-	cityfrom = c1;
+	enter_city(cityfrom);
 
 	cout << " •Перша літера міста в яке прибуває потяг: ";
-	char c2 = NULL;
-	do
-	{
-		if (c2 != NULL) cout << "Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> c2;
-		getchar();
+	enter_city(cityto);
 
-		if (c2 > 96 && c2 < 123)
-		{
-			int a = c2;
-			c2 = a - 32;
-		}
-	} while (c2 < 65 || c2>90);
-	cityto = c2;
-	
-	long long key= (cityfrom * 100000) + (trainnum * pow(10, i)) + cityto;
+	long long key;
+	key_creator(trainnum, cityfrom, cityto, i, key);
 
-	if (Dispatcher.find(key)==Dispatcher.end())
+	if (Dispatcher.find(key) == Dispatcher.end())
 	{
 		cout << " !Такий потяг відстуній у списку працюючих потягів!" << endl;;
 		system("pause");
@@ -236,117 +229,46 @@ void delete_train(unordered_map<long long, Train> &Dispatcher)
 
 void change_time(unordered_map<long long, Train>& Dispatcher)
 {
-	int trainnum;
+	int trainnum, i;
 	char cityfrom, cityto;
 	cout << "  Для того щоб видалити потяг треба ввести його номер та міста звідки - куди він прямує" << endl;
 	cout << " •Номер потягу: ";
-	int i;
-	int num = NULL;
-	do
-	{
-		if (num != NULL) cout << " Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> num;
-		trainnum = num;
-		for (i = 0; num > 0; i++) num /= 10;
-	} while (trainnum <= 0);
+	enter_number(trainnum, i);
 
 	cout << " •Перша літера міста з якого відправиться потяг: ";
-	char c1 = NULL;
-	do
-	{
-		if (c1 != NULL) cout << " Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> c1;
-		getchar();
-
-		if (c1 > 96 && c1 < 123)
-		{
-			int a = c1;
-			c1 = a - 32;
-		}
-	} while (c1 < 65 || c1>90);
-	cityfrom = c1;
+	enter_city(cityfrom);
 
 	cout << " •Перша літера міста в яке прибуває потяг: ";
-	char c2 = NULL;
-	do
-	{
-		if (c2 != NULL) cout << "Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> c2;
-		getchar();
+	enter_city(cityto);
 
-		if (c2 > 96 && c2 < 123)
-		{
-			int a = c2;
-			c2 = a - 32;
-		}
-	} while (c2 < 65 || c2>90);
-	cityto = c2;
+	long long key;
+	key_creator(trainnum, cityfrom, cityto, i, key);
 
-	long long key = (cityfrom * 100000) + (trainnum * pow(10, i)) + cityto;
 
-	
 	if (Dispatcher.find(key) == Dispatcher.end())
 	{
 		cout << " Такого потяга не існує " << endl;;
 		system("pause");
 		return;
 	}
-	
+
 	unordered_map<long long, Train>::iterator itr;
 	itr = Dispatcher.find(key);
 	Train train = itr->second;
-	cout << "  _______________________________________" << endl
-		<< " | Потяг номер " << train.number << endl
-		<< " |-Відправка- " << endl
-		<< " | •Місто " << train.departure_city << endl
-		<< " | •День " << train.departure_day << endl
-		<< " | •Час " << train.departure_time << endl
-		<< " |-Прибуття-" << endl
-		<< " | •Місто " << train.arrival_city << endl
-		<< " | •День " << train.arrival_day << endl
-		<< " | •Час " << train.arrival_time << endl
-		<< " |Стан потягу (0-5) " << train.condition << endl
-		<< " |__________________________________________" << endl << endl;;
+	print_one_train(train);
 
 	Dispatcher.erase(key);
 
 	cout << " •Новий час у який потяг відправиться (записується через крапку): ";
-	train.departure_time = NULL;
-	do
-	{
-		if (train.departure_time != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
-		cin >> train.departure_time;
-	} while (train.departure_time > 23.59 || train.departure_time < 00.00);
+	enter_time_from(train);
 
 	cout << " •Новий час у який потяг прибуде (записується через крапку): ";
-	train.arrival_time = NULL;
-	do
-	{
-		if (train.arrival_time != NULL) cout << " Введені дані не відповідають вимогам, введіть скореговані дані: ";
-		if (train.departure_day == train.arrival_day)
-		{
-			do
-			{
-				cin >> train.arrival_time;
-			} while (train.arrival_time <= train.departure_time);
-		}
-		else cin >> train.arrival_time;
-	} while (train.arrival_time > 23.59 || train.arrival_time < 00.00);
+	enter_time_to(train);
 
-	cout<< "  _______________________________________" << endl
-		<< " | Потяг номер " << train.number << endl
-		<< " |-Відправка- " << endl
-		<< " | •Місто " << train.departure_city << endl
-		<< " | •День " << train.departure_day << endl
-		<< " | •Час " << train.departure_time << endl
-		<< " |-Прибуття-" << endl
-		<< " | •Місто " << train.arrival_city << endl
-		<< " | •День " << train.arrival_day << endl
-		<< " | •Час " << train.arrival_time << endl
-		<< " |Стан потягу (0-5) " << train.condition << endl
-		<< " |__________________________________________" << endl;
 
-    Dispatcher.insert({ key, train });
+	print_one_train(train);
+
+	Dispatcher.insert({ key, train });
 
 	system("pause");
 	system("cls");
@@ -359,7 +281,7 @@ void print_all(unordered_map<long long, Train>& Dispatcher)
 	for (itr = Dispatcher.begin(); itr != Dispatcher.end(); itr++)
 	{
 		Train train = itr->second;
-	   cout << " | Потяг номер " << train.number << endl
+		cout << " | Потяг номер " << train.number << endl
 			<< " |-Відправка- " << endl
 			<< " | •Місто " << train.departure_city << endl
 			<< " | •День " << train.departure_day << endl
@@ -378,10 +300,10 @@ void print_all(unordered_map<long long, Train>& Dispatcher)
 void print_all_Broken(vector <Train>& Broken)
 {
 	vector <Train> ::iterator itr;
-	cout<< "  _________________________________________" << endl;
+	cout << "  _________________________________________" << endl;
 	for (itr = Broken.begin(); itr != Broken.end(); ++itr)
 	{
-		cout<< " | Потяг номер " << itr->number << endl
+		cout << " | Потяг номер " << itr->number << endl
 			<< " |-Відправка- " << endl
 			<< " | •Місто " << itr->departure_city << endl
 			<< " | •День " << itr->departure_day << endl
@@ -400,76 +322,33 @@ void print_all_Broken(vector <Train>& Broken)
 
 void by_number_and_city(unordered_map<long long, Train>& Dispatcher)
 {
-	int trainnum;
+	int trainnum, i;
 	char cityfrom, cityto;
 	cout << "  Для того щоб знайти день та час відправки-прибуття потяга треба ввести його номер та міста звідки - куди він прямує" << endl;
 	cout << " •Номер потягу: ";
-	int i;
-	int num = NULL;
-	do
-	{
-		if (num != NULL) cout << " Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> num;
-		trainnum = num;
-		for (i = 0; num > 0; i++) num /= 10;
-	} while (trainnum <= 0);
+	enter_number(trainnum, i);
 
 	cout << " •Перша літера міста з якого відправиться потяг: ";
-	char c1 = NULL;
-	do
-	{
-		if (c1 != NULL) cout << " Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> c1;
-		getchar();
-
-		if (c1 > 96 && c1 < 123)
-		{
-			int a = c1;
-			c1 = a - 32;
-		}
-	} while (c1 < 65 || c1>90);
-	cityfrom = c1;
+	enter_city(cityfrom);
 
 	cout << " •Перша літера міста в яке прибуває потяг: ";
-	char c2 = NULL;
-	do
-	{
-		if (c2 != NULL) cout << "Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> c2;
-		getchar();
+	enter_city(cityto);
 
-		if (c2 > 96 && c2 < 123)
-		{
-			int a = c2;
-			c2 = a - 32;
-		}
-	} while (c2 < 65 || c2>90);
-	cityto = c2;
+	long long key;
+	key_creator(trainnum, cityfrom, cityto, i, key);
 
-	long long key = (cityfrom * 100000) + (trainnum * pow(10, i)) + cityto;
 
-	
 	if (Dispatcher.find(key) == Dispatcher.end())
 	{
 		cout << " !Такого потяга не існує!";
 		system("pause");
 		return;
 	}
-    unordered_map<long long, Train>::iterator itr;
+	unordered_map<long long, Train>::iterator itr;
 	itr = Dispatcher.find(key);
 	Train train = itr->second;
-	cout<< "  __________________________________________" << endl
-	    << " | Потяг номер " << train.number << endl
-		<< " |-Відправка- " << endl
-		<< " | •Місто " << train.departure_city << endl
-		<< " | •День " << train.departure_day << endl
-		<< " | •Час " << train.departure_time << endl
-		<< " |-Прибуття-" << endl
-		<< " | •Місто " << train.arrival_city << endl
-		<< " | •День " << train.arrival_day << endl
-		<< " | •Час " << train.arrival_time << endl
-		<< " |Стан потягу (0-5) " << train.condition << endl
-		<< " |__________________________________________" << endl;
+
+	print_one_train(train);
 
 	system("pause");
 	system("cls");
@@ -479,38 +358,12 @@ void from_A_to_B(unordered_map<long long, Train>& Dispatcher)
 {
 	char cityfrom, cityto;
 
-	cout << " -Введіть перші літери міст для пошуку- " << endl ;
+	cout << " -Введіть перші літери міст для пошуку- " << endl;
 	cout << " •Перша літера міста з якого відправиться потяг: ";
-	char c1 = NULL;
-	do
-	{
-		if (c1 != NULL) cout << " Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> c1;
-		getchar();
-
-		if (c1 > 96 && c1 < 123)
-		{
-			int a = c1;
-			c1 = a - 32;
-		}
-	} while (c1 < 65 || c1>90);
-	cityfrom = c1;
+	enter_city(cityfrom);
 
 	cout << " •Перша літера міста в яке прибуває потяг: ";
-	char c2 = NULL;
-	do
-	{
-		if (c2 != NULL) cout << "Введені дані є неправильними, введіть скореговані дані: ";
-		cin >> c2;
-		getchar();
-
-		if (c2 > 96 && c2 < 123)
-		{
-			int a = c2;
-			c2 = a - 32;
-		}
-	} while (c2 < 65 || c2>90);
-	cityto = c2;
+	enter_city(cityto);
 
 	unordered_map<long long, Train>::iterator itr;
 	int i = 0;
@@ -534,33 +387,33 @@ void from_A_to_B(unordered_map<long long, Train>& Dispatcher)
 				<< " |__________________________________________" << endl;
 		}
 	}
-	if (i == 0) cout << "Потягів з міста "<< cityfrom << " в місто "<< cityto << " немає."<<endl;
+	if (i == 0) cout << "Потягів з міста " << cityfrom << " в місто " << cityto << " немає." << endl;
 
 	system("pause");
 	system("cls");
 }
 
-void control_menu(unordered_map<long long, Train>& Dispatcher, vector <Train> &Broken)
+void control_menu(unordered_map<long long, Train>& Dispatcher, vector <Train>& Broken)
 {
 
 	cout << ".........КОНТРОЛЬНЕ МЕНЮ..........\n";
 	int ch;
 	do
-	{     
-		cout <<" _____________________________________________________________________\n"
+	{
+		cout << " _____________________________________________________________________\n"
 			<< "| 1.Створити потяг                                                    |\n"
 			<< "| 2.Видалити потяг                                                    |\n"
-		    << "| 3.Змінити час існуючого потягу                                      |\n"
+			<< "| 3.Змінити час існуючого потягу                                      |\n"
 			<< "| 4.Вивести графік потягів                                            |\n"
-			<< "| 5.Вивести номер зломаних потягів та перміста звідки вони виїха      |\n" 
+			<< "| 5.Вивести список зламаних потягів                                   |\n"
 			<< "| 6.Повернутись до головного меню                                     |\n"
 			<< "|_____________________________________________________________________|\n"
-		<< " Введіть Ваш вибір: ";
+			<< " Введіть Ваш вибір: ";
 		cin >> ch;
 		switch (ch)
 		{
 		case 1:
-			system("cls"); 
+			system("cls");
 			create_train(Dispatcher, Broken);
 			break;
 		case 2:
@@ -578,7 +431,7 @@ void control_menu(unordered_map<long long, Train>& Dispatcher, vector <Train> &B
 		case 5:
 			print_all_Broken(Broken);
 			break;
-	    }
+		}
 	} while (ch <= 4);
 	getchar();
 	system("cls");
@@ -593,12 +446,12 @@ void user_menu(unordered_map<long long, Train>& Dispatcher)
 	do
 	{
 		cout << "  ___________________________________________ \n"
-		     << " |1.Отримати інформацію про окремий потяг    |\n"
-			 << " |2.Список усіх потягів із міста А в місто Б |\n"
-		     << " |3.Список всіх потягів                      |\n"
-			 << " |4.Повернутись до головного меню            |\n"
-			 << " |___________________________________________|\n"
-		     << " Ваш вибір:";
+			<< " |1.Отримати інформацію про окремий потяг    |\n"
+			<< " |2.Список усіх потягів із міста А в місто Б |\n"
+			<< " |3.Список всіх потягів                      |\n"
+			<< " |4.Повернутись до головного меню            |\n"
+			<< " |___________________________________________|\n"
+			<< " Ваш вибір:";
 		cin >> ch;
 		cout << endl;
 		switch (ch)
@@ -639,7 +492,7 @@ int main()
 		do
 		{
 			cout << " ______________________________________________________\n"
-			    << "|   щоб працювати із потягами натисніть 1;             |\n"
+				<< "|   щоб працювати із потягами натисніть 1;             |\n"
 				<< "| щоб подивитись інформацію про потяги натисніть 2;    |\n"
 				<< "|______________________________________________________|\n"
 				<< " Ваш вибір: ";
@@ -647,7 +500,7 @@ int main()
 			system("cls");
 			if (choice == 1) control_menu(Dispatcher, Broken);
 			else if (choice == 2) user_menu(Dispatcher);
-			
+
 		} while (choice > 2 || choice < 1);
 		cout << " Натисніть англійське e для того щоб вийти або будь-що, щоб повторити\n"
 			<< " Ваш вибір: ";
@@ -657,8 +510,8 @@ int main()
 	system("cls");
 
 	cout << "***********************************************\n"
-	     << "  ............ЗАКІНЧЕННЯ РОБОТИ..............\n"
-	     << "***********************************************\n";
+		<< "  ............ЗАКІНЧЕННЯ РОБОТИ..............\n"
+		<< "***********************************************\n";
 
-   return 0;
+	return 0;
 }
